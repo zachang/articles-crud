@@ -17,7 +17,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from django.http import HttpResponse
 
 from . import serializers
-from .models import Article
+from .models import Article, Category
 
 
 def index(request):
@@ -52,4 +52,9 @@ status=HTTP_200_OK)
 class ArticleViewset(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = serializers.ArticleSerializer
+    permission_classes = (AllowAny,)
+
+class CategoryViewset(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = serializers.CategorySerializer
     permission_classes = (AllowAny,)
