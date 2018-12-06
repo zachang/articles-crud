@@ -30,6 +30,11 @@ class AdminViewset(viewsets.ModelViewSet):
     serializer_class = serializers.AdminSerializer
     permission_classes = (AllowAny,)
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()
+
 
 @csrf_exempt
 @api_view(["POST"])

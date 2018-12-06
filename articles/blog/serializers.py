@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Article, Category
 from django.contrib.auth.models import User
+from .models import Article, Category
 
 class AdminSerializer(serializers.ModelSerializer):
     """A serializer for Admin profile object"""
@@ -25,4 +25,3 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'category_name')
-
