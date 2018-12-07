@@ -21,6 +21,9 @@ class Category(models.Model):
 
     category_name = models.CharField(max_length=255)
 
+    def __str__(self):  
+         return self.category_name 
+
 
 class Article(models.Model):
     """Represents News model class"""
@@ -30,3 +33,6 @@ class Article(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     content = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
+
+    def __str__(self):  
+         return self.title 
