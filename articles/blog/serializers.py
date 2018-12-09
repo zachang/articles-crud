@@ -4,7 +4,7 @@ from .models import Article, Category
 
 class AdminSerializer(serializers.ModelSerializer):
     """A serializer for Admin profile object"""
-    articles = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    articles = serializers.PrimaryKeyRelatedField(many=True, queryset=Article.objects.all())
 
     class Meta:
         model = User
