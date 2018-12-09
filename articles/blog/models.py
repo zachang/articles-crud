@@ -29,8 +29,8 @@ class Article(models.Model):
     """Represents News model class"""
 
     title = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    category = models.ForeignKey(Category, related_name="categories", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name="articles", on_delete=models.CASCADE, null=True)
     content = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
 

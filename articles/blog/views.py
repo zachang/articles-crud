@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
@@ -17,6 +17,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from django.http import HttpResponse
 
 from . import serializers
+from .permissions import IsOwnerOrReadOnly
 from .models import Article, Category
 
 
@@ -57,9 +58,13 @@ status=HTTP_200_OK)
 class ArticleViewset(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = serializers.ArticleSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
+    def perform_create(self, serializer):
+            """Save the post data when creating a new article."""
+            serializer.save(user=self.request.user)
 
 class CategoryViewset(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
