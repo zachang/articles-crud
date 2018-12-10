@@ -19,8 +19,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ('id', 'title', 'content', 'category', 'user')
-
-
+        
 
 class CategorySerializer(serializers.ModelSerializer):
     """A serializer for Category object"""
