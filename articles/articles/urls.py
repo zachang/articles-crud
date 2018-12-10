@@ -4,7 +4,7 @@ from blog.views import login, index
 
 urlpatterns = [
     path('', index),
-    path('blog/api/', include('blog.urls')),
+    path('blog/api/', include('blog.urls', namespace='blog')),
     path('blog/api/login/', login),
     path('admin/', admin.site.urls),
 ]

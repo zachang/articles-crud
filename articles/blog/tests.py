@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APIClient
 
+from rest_framework.reverse import reverse
+
 from .models import Category, Article
 from . import views
 
@@ -36,7 +38,7 @@ class CategoryViewTestCase(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=user)
         self.category_data = {'category_name': 'Politics'}
-        self.response = self.client.post('/blog/api/category/', self.category_data, format='json')
+        self.response = self.client.post(reverse('blog:category-list'), self.category_data, format='json')
 
 
     def test_api_can_create_a_category(self):
@@ -50,7 +52,7 @@ class CategoryViewTestCase(TestCase):
 
         new_client = APIClient()
         new_category_data = {'category_name': 'War'}
-        response = new_client.post('/blog/api/category/', new_category_data, format='json')
+        response = new_client.post(reverse('blog:category-list'), new_category_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -58,7 +60,8 @@ class CategoryViewTestCase(TestCase):
         """Test that the api can update category"""
 
         self.update_category_data = {'category_name': 'Music'}
-        self.response_update = self.client.put(f'/blog/api/category/{self.response.data["id"]}/', 
+        self.response_update = self.client.put(reverse('blog:category-detail',
+             args=(self.response.data["id"],)), 
             self.update_category_data, format='json'
         )
         
@@ -71,7 +74,7 @@ class CategoryViewTestCase(TestCase):
     def test_api_get_all_category(self):
         """Test that the api can retrieve category"""
 
-        self.response_all = self.client.get('/blog/api/category/', format='json')
+        self.response_all = self.client.get(reverse('blog:category-list'), format='json')
 
         self.assertEqual(self.response_all.status_code, status.HTTP_200_OK)
         self.assertEqual(self.response_all.data[0]['id'], self.response.data['id'])
@@ -80,7 +83,8 @@ class CategoryViewTestCase(TestCase):
     def test_api_can_get_single_category(self):
         """Test that the api can retrieve a category"""
 
-        self.response_one = self.client.get(f'/blog/api/category/{self.response.data["id"]}/', format='json')
+        self.response_one = self.client.get(reverse('blog:category-detail',
+            args=(self.response.data["id"],)), format='json')
 
         self.assertEqual(self.response_one.status_code, status.HTTP_200_OK)
         self.assertEqual(self.response_one.data['category_name'], self.category_data['category_name'])
@@ -89,6 +93,7 @@ class CategoryViewTestCase(TestCase):
     def test_api_can_get_single_category(self):
         """Test that the api can retrieve a category"""
 
-        self.response_delete = self.client.delete(f'/blog/api/category/{self.response.data["id"]}/', format='json')
+        self.response_delete = self.client.delete(reverse('blog:category-detail',
+            args=(self.response.data["id"],)), format='json')
 
         self.assertEqual(self.response_delete.status_code, status.HTTP_204_NO_CONTENT)

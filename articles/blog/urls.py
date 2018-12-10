@@ -7,7 +7,7 @@ router.register(r'admin', views.AdminViewset)
 router.register(r'article', views.ArticleViewset)
 router.register(r'category', views.CategoryViewset)
 
-
+app_name = 'blog'
 urlpatterns = [
     path('', include(router.urls)),
 ]
