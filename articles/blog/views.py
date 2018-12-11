@@ -22,7 +22,7 @@ from .models import Article, Category
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Hello, world. You're at the blogs index.")
 
 
 
