@@ -1,5 +1,4 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import Article 
+from rest_framework.permissions import BasePermission, SAFE_METHODS 
 
 
 class IsOwnerOrReadOnly(BasePermission):

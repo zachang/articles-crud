@@ -38,7 +38,9 @@ class CategoryViewTestCase(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=user)
         self.category_data = {'category_name': 'Politics'}
+        self.category_data_2 = {'category_name': 'Dance'}
         self.response = self.client.post(reverse('blog:category-list'), self.category_data, format='json')
+        self.response_2 = self.client.post(reverse('blog:category-list'), self.category_data_2, format='json')
 
 
     def test_api_can_create_a_category(self):
@@ -83,17 +85,16 @@ class CategoryViewTestCase(TestCase):
     def test_api_can_get_single_category(self):
         """Test that the api can retrieve a category"""
 
+        self.response_delete = self.client.delete(reverse('blog:category-detail',
+            args=(self.response.data["id"],)), format='json')
+
+        self.assertEqual(self.response_delete.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_can_get_single_category(self):
+        """Test that the api can retrieve a category"""
+
         self.response_one = self.client.get(reverse('blog:category-detail',
             args=(self.response.data["id"],)), format='json')
 
         self.assertEqual(self.response_one.status_code, status.HTTP_200_OK)
         self.assertEqual(self.response_one.data['category_name'], self.category_data['category_name'])
-
-
-    def test_api_can_get_single_category(self):
-        """Test that the api can retrieve a category"""
-
-        self.response_delete = self.client.delete(reverse('blog:category-detail',
-            args=(self.response.data["id"],)), format='json')
-
-        self.assertEqual(self.response_delete.status_code, status.HTTP_204_NO_CONTENT)

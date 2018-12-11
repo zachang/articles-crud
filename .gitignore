@@ -3,3 +3,4 @@ article-api/
 articles/blog/__pycache__/
 articles/blog/migrations/__pycache__/
 articles/articles/__pycache__/
+.env
