@@ -7,7 +7,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
-    HTTP_200_OK
+    HTTP_200_OK,
+    HTTP_201_CREATED
 )
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -31,16 +32,21 @@ class AdminViewset(viewsets.ModelViewSet):
     serializer_class = serializers.AdminSerializer
     permission_classes = (AllowAny,)
 
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        instance.set_password(instance.password)
-        instance.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.AdminSerializerWithToken(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'user': serializer.data}, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 class ArticleViewset(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = serializers.ArticleSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+    
 
     def perform_create(self, serializer):
             """Save the post data when creating a new article."""
