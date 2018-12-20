@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import Http404
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
@@ -20,6 +21,7 @@ from django.http import HttpResponse
 from . import serializers
 from .permissions import IsOwnerOrReadOnly
 from .models import Article, Category
+from .utils import CustomAPIException
 
 
 def index(request):
@@ -47,10 +49,18 @@ class ArticleViewset(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
     
 
-    def perform_create(self, serializer):
-            """Save the post data when creating a new article."""
-            serializer.save(user=self.request.user)
-            
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                category = Category.objects.get(pk=request.data['category'])
+                serializer.save(user=self.request.user, category_id=category.id)
+                return Response({'articles': serializer.data}, status=HTTP_201_CREATED)
+            except Category.DoesNotExist:
+                raise CustomAPIException("This Category does not exist", 
+                    status_code=HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
 
 class CategoryViewset(viewsets.ModelViewSet):
     queryset = Category.objects.all()

@@ -20,7 +20,7 @@ class ArticlePlainSerializer(serializers.ModelSerializer):
         model = Article
         fields = ('id', 'title', 'content')
 
-class ArticleSerializer(ArticlePlainSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
     """A serializer for Article object"""
     user = serializers.ReadOnlyField(source='user.id')
     category = CategorySerializer(read_only=True)
@@ -28,6 +28,10 @@ class ArticleSerializer(ArticlePlainSerializer):
     class Meta:
         model = Article
         fields = ('id', 'title', 'content', 'category', 'user')
+
+    def create(self, validated_data):
+        article = Article.objects.create(**validated_data)
+        return article
         
 
 class AdminSerializer(serializers.ModelSerializer):
