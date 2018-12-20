@@ -26,9 +26,8 @@ def index(request):
     return HttpResponse("Hello, world. You're at the blogs index.")
 
 
-
 class AdminViewset(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset =  User.objects.all()
     serializer_class = serializers.AdminSerializer
     permission_classes = (AllowAny,)
 
