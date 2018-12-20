@@ -4,9 +4,35 @@ from django.contrib.auth.models import User
 from .models import Article, Category
 
 
+
+class CategorySerializer(serializers.ModelSerializer):
+    """A serializer for Category object"""
+
+    class Meta:
+        model = Category
+        fields = ('id', 'category_name')
+
+
+class ArticlePlainSerializer(serializers.ModelSerializer):
+    """A serializer for Article object"""
+
+    class Meta:
+        model = Article
+        fields = ('id', 'title', 'content')
+
+class ArticleSerializer(ArticlePlainSerializer):
+    """A serializer for Article object"""
+    user = serializers.ReadOnlyField(source='user.id')
+    category = CategorySerializer(read_only=True)
+
+    class Meta:
+        model = Article
+        fields = ('id', 'title', 'content', 'category', 'user')
+        
+
 class AdminSerializer(serializers.ModelSerializer):
     """A serializer for Admin profile object"""
-    articles = serializers.StringRelatedField(many=True, read_only=True)
+    articles = ArticlePlainSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -41,18 +67,4 @@ class AdminSerializerWithToken(serializers.ModelSerializer):
         user.save()    
         return user
 
-class ArticleSerializer(serializers.ModelSerializer):
-    """A serializer for Article object"""
-    user = serializers.ReadOnlyField(source='user.id')
 
-    class Meta:
-        model = Article
-        fields = ('id', 'title', 'content', 'category', 'user')
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    """A serializer for Category object"""
-
-    class Meta:
-        model = Category
-        fields = ('id', 'category_name')

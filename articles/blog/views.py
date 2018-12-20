@@ -50,6 +50,7 @@ class ArticleViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer):
             """Save the post data when creating a new article."""
             serializer.save(user=self.request.user)
+            
 
 class CategoryViewset(viewsets.ModelViewSet):
     queryset = Category.objects.all()
